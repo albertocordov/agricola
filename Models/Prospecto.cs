@@ -23,7 +23,8 @@ namespace AgricolaProspectos.Models
         public string Rfc { get; set; } = null!;
         public string? Estatus { get; set; }
 
-        public virtual ICollection<Documento> Documentos { get; set; }
+        public HashSet<Documento> Documentos { get; set; }
+
         public virtual ICollection<ObservacionesRechazo> ObservacionesRechazos { get; set; }
     }
 }

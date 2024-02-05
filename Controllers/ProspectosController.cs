@@ -20,17 +20,25 @@ namespace AgricolaProspectos.Controllers
 
         private string GuardarArchivo(IFormFile archivo, string nombreDocumento)
         {
-            if (archivo != null && archivo.Length > 0)
+            try
             {
-                string rutaDirectorio = "NewFolder";
-                string rutaArchivo = Path.Combine(rutaDirectorio, nombreDocumento);
-
-                using (var fileStream = new FileStream(rutaArchivo, FileMode.Create))
+                if (archivo != null && archivo.Length > 0)
                 {
-                    archivo.CopyTo(fileStream);
-                }
+                    string rutaDirectorio = "NewFolder";
+                    string rutaArchivo = Path.Combine(rutaDirectorio, nombreDocumento);
 
-                return rutaArchivo;
+                    using (var fileStream = new FileStream(rutaArchivo, FileMode.Create))
+                    {
+                        archivo.CopyTo(fileStream);
+                    }
+
+                    return rutaArchivo;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejar la excepción según tus necesidades, por ejemplo, registrándola
+                Console.WriteLine($"Error en el método GuardarArchivo: {ex.Message}");
             }
 
             return null;
@@ -39,18 +47,26 @@ namespace AgricolaProspectos.Controllers
         [HttpGet]
         public IActionResult Download(int documentoId)
         {
-            var documento = _context.Documentos.FirstOrDefault(d => d.DocumentoId == documentoId);
-
-            if (documento != null && !string.IsNullOrEmpty(documento.RutaDocumento))
+            try
             {
-                var rutaCompleta = documento.RutaDocumento.TrimEnd('.');
-                var fileBytes = System.IO.File.ReadAllBytes(rutaCompleta);
+                var documento = _context.Documentos.FirstOrDefault(d => d.DocumentoId == documentoId);
 
-                return File(fileBytes, "application/pdf", documento.NombreDocumento);
+                if (documento != null && !string.IsNullOrEmpty(documento.RutaDocumento))
+                {
+                    var rutaCompleta = documento.RutaDocumento.TrimEnd('.');
+                    var fileBytes = System.IO.File.ReadAllBytes(rutaCompleta);
+
+                    return File(fileBytes, "application/pdf", documento.NombreDocumento);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return NotFound();
+                Console.WriteLine($"Error en el método Download: {ex.Message}");
+                return StatusCode(500, "Error interno del servidor");
             }
         }
 
@@ -123,34 +139,37 @@ namespace AgricolaProspectos.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Nombre,PrimerApellido,SegundoApellido,Calle,Numero,Colonia,CodigoPostal,Telefono,Rfc,Estatus,Documentos")] Prospecto prospecto)
         {
-            Console.WriteLine("Prueba 1");
-
-            if (ModelState.IsValid)
+            try
             {
-                if (prospecto.Documentos != null && prospecto.Documentos.Count > 0)
+                Console.WriteLine("Prueba 1");
+
+                if (ModelState.IsValid)
                 {
+                    prospecto.Documentos ??= new HashSet<Documento>();
+
                     foreach (var documento in prospecto.Documentos)
                     {
                         if (documento.Archivo != null && documento.Archivo.Length > 0)
                         {
                             Console.WriteLine("Prueba 5");
-
-                            // Guarda el archivo y obtener la ruta
                             documento.RutaDocumento = GuardarArchivo(documento.Archivo, documento.NombreDocumento);
-
-                            // Añadir el documento al contexto
                             _context.Documentos.Add(documento);
                         }
                     }
+
+                    // Guarda prospecto
+                    _context.Prospectos.Add(prospecto);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
                 }
-
-                // Guarda prospecto
-                _context.Prospectos.Add(prospecto);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
+                return View(prospecto);
             }
-            return View(prospecto);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en el método Create: {ex.Message}");
+                return RedirectToAction("Error");
+            }
         }
 
         // GET: Prospectos/Edit/5
