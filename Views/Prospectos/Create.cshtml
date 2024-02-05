@@ -7,10 +7,10 @@
 <h1>Captura de prospecto</h1>
 
 <hr />
-<div class="row">
-    <form asp-action="Create" method="post" enctype="multipart/form-data">
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <!-- Datos del prospecto -->
         <div class="col-md-6">
-
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label">Nombre*</label>
@@ -77,15 +77,14 @@
                     </div>
                 </div>
                 <button type="button" class="btn btn-success" id="agregarDocumentoBtn">Agregar Documento</button>
+                <span id="leyendaDocumentos" class="text-danger" style="display:none;">Debe llenar al menos un documento.</span>
             </div>
         </div>
-    </form>
-
-
-</div>
+    </div>
+</form>
 
 <div>
-    <a asp-action="Index">Regresar</a>
+    <a id="regresarLink" href="/Prospectos/Index">Regresar</a>
 </div>
 
 
@@ -93,22 +92,37 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         $(document).ready(function () {
             var documentosContainer = $("#documentosContainer");
             var agregarDocumentoBtn = $("#agregarDocumentoBtn");
             var documentoCount = 1;
 
+            // Se hace la lógica para agregar nuevo formulario de documento al pulsar el botón de agregar.
             agregarDocumentoBtn.click(function () {
-                if (documentoCount < 3) {
-                    documentoCount++;
-                    var newDocumentoInput = '<div class="documento-input">' +
-                        '<input type="text" name="Documentos[' + documentoCount + '].Nombre" class="form-control" placeholder="Nombre del documento" required>' +
-                        '<input type="file" name="Documentos[' + documentoCount + '].Archivo" class="form-control" accept=".pdf" required>' +
-                        '<br></div>';
-                    documentosContainer.append(newDocumentoInput);
+                var documentoInput = '<div class="documento-input">' +
+                    '<input type="text" name="Documentos[' + documentosContainer.children().length + '].NombreDocumento" class="form-control" placeholder="Nombre del documento" required>' +
+                    '<input type="file" name="Documentos[' + documentosContainer.children().length + '].Archivo" class="form-control" accept=".pdf" required>' +
+                    '<br></div>';
+                documentosContainer.append(documentoInput);
+            });
+
+            // Se muestra la confirmación antes de regresar.
+            $("#regresarLink").click(function (e) {
+                e.preventDefault();
+
+                if (confirm("¿Estás seguro de que deseas regresar? Se perderán todos los datos capturados.")) {
+                    window.location.href = $(this).attr("href");
                 }
+            });
+
+            $("form").submit(function () {
+                if (documentoCount === 1) {
+                    $("#leyendaDocumentos").show();
+                } else {
+                    $("#leyendaDocumentos").hide();
+                }
+                return true;
             });
 
 
