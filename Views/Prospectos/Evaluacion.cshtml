@@ -1,0 +1,53 @@
+﻿@model IEnumerable<AgricolaProspectos.Models.Prospecto>
+
+@{
+    ViewData["Title"] = "Evaluacion";
+}
+
+<h1>Evaluación de prospectos</h1>
+
+<p>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                Primer apellido
+            </th>
+            <th>
+                Segundo apellido
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estatus)
+            </th>
+            <th>
+                Evaluación
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrimerApellido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SegundoApellido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estatus)
+            </td>
+            <td>
+                    <a asp-action="DetallesEvaluacion" asp-route-id="@item.ProspectoId" class="btn btn-warning">Evaluar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
