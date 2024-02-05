@@ -119,25 +119,7 @@
                 toggleObservaciones();
             });
 
-            $("form").submit(function (event) {
-                event.preventDefault();
-
-                var prospectoId = $("#ProspectoId").val();
-                var dictamen = $("#dictamen").val();
-                var observaciones = $("#observaciones").val();
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Prospecto evaluado correctamente',
-                    showConfirmButton: true,
-                    didOpen: () => {
-                        Swal.stopTimer();
-                    },
-                    preConfirm: () => {
-                        window.location.href = '@Url.Action("Index", "Prospectos")';
-                    }
-                });
-            });
+            
         });
     </script>
 }

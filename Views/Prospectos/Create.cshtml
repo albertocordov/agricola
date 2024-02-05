@@ -8,8 +8,9 @@
 
 <hr />
 <div class="row">
-    <div class="col-md-6">
-        <form asp-action="Create">
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <div class="col-md-6">
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label">Nombre*</label>
@@ -58,29 +59,29 @@
             </div>
             <br>
             <div class="form-group">
-                <input type="submit" value="Capturar" class="btn btn-primary"/>
+                <input type="submit" value="Capturar" class="btn btn-primary" />
             </div>
             <br>
-        </form>
-    </div>
 
-    <!-- Documentos -->
-    <div class="col-md-6">
-        <div class="form-group">
-            <label>Documentos:</label>
-            <div id="documentosContainer">
-                <div class="documento-input">
-                    <input type="text" name="Documentos[0].Nombre" class="form-control" placeholder="Nombre del documento" required>
-                    <input type="file" name="Documentos[0].Archivo" class="form-control" accept=".pdf, .doc, .docx" required>
-                    <br>
-
-                </div>
-            </div>
-            <button type="button" class="btn btn-success" id="agregarDocumentoBtn">Agregar Documento</button>
         </div>
-    </div>
 
-    
+        <!-- Documentos -->
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Documentos:</label>
+                <div id="documentosContainer">
+                    <div class="documento-input">
+                        <input type="text" name="Documentos[0].NombreDocumento" class="form-control" placeholder="Nombre del documento" required>
+                        <input type="file" name="Documentos[0].Archivo" class="form-control" accept=".pdf" required>
+                        <br>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-success" id="agregarDocumentoBtn">Agregar Documento</button>
+            </div>
+        </div>
+    </form>
+
+
 </div>
 
 <div>
@@ -104,11 +105,13 @@
                     documentoCount++;
                     var newDocumentoInput = '<div class="documento-input">' +
                         '<input type="text" name="Documentos[' + documentoCount + '].Nombre" class="form-control" placeholder="Nombre del documento" required>' +
-                        '<input type="file" name="Documentos[' + documentoCount + '].Archivo" class="form-control" accept=".pdf, .doc, .docx" required>' +
+                        '<input type="file" name="Documentos[' + documentoCount + '].Archivo" class="form-control" accept=".pdf" required>' +
                         '<br></div>';
                     documentosContainer.append(newDocumentoInput);
                 }
             });
+
+
         });
     </script>
 }
