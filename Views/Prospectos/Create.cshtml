@@ -77,7 +77,7 @@
                     </div>
                 </div>
                 <button type="button" class="btn btn-success" id="agregarDocumentoBtn">Agregar Documento</button>
-                <span id="leyendaDocumentos" class="text-danger" style="display:none;">Debe llenar al menos un documento.</span>
+                <span id="leyendaDocumentos" class="text-danger" style="display:none;">El campo Documento no puede estar vacío.</span>
             </div>
         </div>
     </div>
@@ -98,7 +98,7 @@
             var agregarDocumentoBtn = $("#agregarDocumentoBtn");
             var documentoCount = 1;
 
-            // Se hace la lógica para agregar nuevo formulario de documento al pulsar el botón de agregar.
+            // Se hace la lógica para agregar nuevo formulario de documento al pulsar el botón de agregar. 
             agregarDocumentoBtn.click(function () {
                 var documentoInput = '<div class="documento-input">' +
                     '<input type="text" name="Documentos[' + documentosContainer.children().length + '].NombreDocumento" class="form-control" placeholder="Nombre del documento" required>' +
