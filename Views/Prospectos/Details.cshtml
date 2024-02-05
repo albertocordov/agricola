@@ -7,7 +7,6 @@
 <h1>Detalles del prospecto</h1>
 
 <div>
-
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Nombre)
@@ -69,6 +68,23 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Estatus)
         </dd>
+        @if (Model.Estatus == "Rechazado")
+        {
+            <h2>Observaciones de Rechazo</h2>
+            <p>
+                @if (Model.ObservacionesRechazos != null && Model.ObservacionesRechazos.Any())
+                {
+                    foreach (var observacion in Model.ObservacionesRechazos)
+                    {
+                    <p>@observacion.Observacion</p>
+                    }
+                }
+                else
+                {
+                <p>SIN DATOS</p>
+                }
+            </p>
+        }
     </dl>
 </div>
 <div>

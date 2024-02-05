@@ -21,13 +21,40 @@ namespace AgricolaProspectos.Controllers
         // GET: Prospectos
         public async Task<IActionResult> Index()
         {
-              return _context.Prospectos != null ? 
-                          View(await _context.Prospectos.ToListAsync()) :
-                          Problem("Entity set 'agricolaContext.Prospectos'  is null.");
+            return _context.Prospectos != null ?
+                        View(await _context.Prospectos.ToListAsync()) :
+                        Problem("Entity set 'agricolaContext.Prospectos'  is null.");
+        }
+
+        // GET: Prospectos
+        public async Task<IActionResult> Evaluacion()
+        {
+            return _context.Prospectos != null ?
+                        View(await _context.Prospectos.ToListAsync()) :
+                        Problem("Entity set 'agricolaContext.Prospectos'  is null.");
         }
 
         // GET: Prospectos/Details/5
         public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || _context.Prospectos == null)
+            {
+                return NotFound();
+            }
+
+            var prospecto = await _context.Prospectos
+            .Include(p => p.ObservacionesRechazos)
+            .FirstOrDefaultAsync(m => m.ProspectoId == id);
+
+            if (prospecto == null)
+            {
+                return NotFound();
+            }
+
+            return View(prospecto);
+        }
+
+        public async Task<IActionResult> DetallesEvaluacion(int? id)
         {
             if (id == null || _context.Prospectos == null)
             {
@@ -82,39 +109,22 @@ namespace AgricolaProspectos.Controllers
             return View(prospecto);
         }
 
-        // POST: Prospectos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProspectoId,Nombre,PrimerApellido,SegundoApellido,Calle,Numero,Colonia,CodigoPostal,Telefono,Rfc,Estatus")] Prospecto prospecto)
+        public async Task<IActionResult> Evaluar(int ProspectoId, string dictamen, string observaciones)
         {
-            if (id != prospecto.ProspectoId)
+            if (_context.Prospectos == null)
             {
-                return NotFound();
+                return Problem("Entity set 'agricolaContext.Prospectos' is null.");
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(prospecto);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProspectoExists(prospecto.ProspectoId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(prospecto);
+            // Añade estas líneas para depurar
+            Console.WriteLine($"ProspectoId: {ProspectoId}");
+            Console.WriteLine($"dictamen: {dictamen}");
+            Console.WriteLine($"observaciones: {observaciones}");
+
+            // Llamada al procedimiento almacenado
+            await _context.EvaluaProspecto(ProspectoId, dictamen, observaciones);
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Prospectos/Delete/5
@@ -149,14 +159,14 @@ namespace AgricolaProspectos.Controllers
             {
                 _context.Prospectos.Remove(prospecto);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProspectoExists(int id)
         {
-          return (_context.Prospectos?.Any(e => e.ProspectoId == id)).GetValueOrDefault();
+            return (_context.Prospectos?.Any(e => e.ProspectoId == id)).GetValueOrDefault();
         }
     }
 }

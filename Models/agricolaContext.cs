@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -126,6 +127,20 @@ namespace AgricolaProspectos.Models
             });
 
             OnModelCreatingPartial(modelBuilder);
+        }
+
+        // Procedimiento almacenado que modifica el estatus y la inserción de observaciones en caso de que aplique.
+        public async Task<int> EvaluaProspecto(int prospectoId, string dictamen, string observaciones)
+        {
+            Console.WriteLine(prospectoId);
+            var parameters = new[]
+            {
+            new SqlParameter("@ProspectoId", prospectoId),
+            new SqlParameter("@Dictamen", dictamen),
+            new SqlParameter("@Observaciones", observaciones)
+        };
+
+            return await Database.ExecuteSqlRawAsync("exec evaluaProspecto @ProspectoId, @Dictamen, @Observaciones", parameters);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

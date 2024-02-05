@@ -28,11 +28,6 @@ C:\Users\ElM4canas\source\repos\AgricolaProspectos\obj\Debug\net6.0\refint\Agric
 C:\Users\ElM4canas\source\repos\AgricolaProspectos\obj\Debug\net6.0\AgricolaProspectos.pdb
 C:\Users\ElM4canas\source\repos\AgricolaProspectos\obj\Debug\net6.0\AgricolaProspectos.genruntimeconfig.cache
 C:\Users\ElM4canas\source\repos\AgricolaProspectos\obj\Debug\net6.0\ref\AgricolaProspectos.dll
-C:\Users\ElM4canas\source\repos\AgricolaProspectos\bin\Debug\net6.0\agricola\jsconfig.json
-C:\Users\ElM4canas\source\repos\AgricolaProspectos\bin\Debug\net6.0\agricola\package-lock.json
-C:\Users\ElM4canas\source\repos\AgricolaProspectos\bin\Debug\net6.0\agricola\package.json
-C:\Users\ElM4canas\source\repos\AgricolaProspectos\bin\Debug\net6.0\package-lock.json
-C:\Users\ElM4canas\source\repos\AgricolaProspectos\bin\Debug\net6.0\package.json
 C:\Users\ElM4canas\source\repos\AgricolaProspectos\bin\Debug\net6.0\Humanizer.dll
 C:\Users\ElM4canas\source\repos\AgricolaProspectos\bin\Debug\net6.0\Microsoft.Data.SqlClient.dll
 C:\Users\ElM4canas\source\repos\AgricolaProspectos\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.dll
