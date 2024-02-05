@@ -80,7 +80,7 @@ namespace AgricolaProspectos.Models
                 entity.ToTable("prospectos");
 
                 entity.Property(e => e.ProspectoId)
-                    .ValueGeneratedNever()
+                    .ValueGeneratedOnAdd()  
                     .HasColumnName("prospectoID");
 
                 entity.Property(e => e.Calle)
@@ -97,6 +97,7 @@ namespace AgricolaProspectos.Models
 
                 entity.Property(e => e.Estatus)
                     .HasMaxLength(20)
+                    .HasDefaultValue("Enviado")
                     .HasColumnName("estatus");
 
                 entity.Property(e => e.Nombre)
