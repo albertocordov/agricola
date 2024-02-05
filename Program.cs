@@ -1,7 +1,15 @@
+using AgricolaProspectos.Models;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// String de conexion JSON
+builder.Services.AddDbContext<agricolaContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("conexion")));
+
 
 var app = builder.Build();
 
