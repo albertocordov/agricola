@@ -36,7 +36,7 @@ namespace AgricolaProspectos.Models
                 entity.ToTable("documentos");
 
                 entity.Property(e => e.DocumentoId)
-                    .ValueGeneratedNever()
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("documentoID");
 
                 entity.Property(e => e.NombreDocumento)

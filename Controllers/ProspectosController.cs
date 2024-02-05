@@ -18,6 +18,43 @@ namespace AgricolaProspectos.Controllers
             _context = context;
         }
 
+        private string GuardarArchivo(IFormFile archivo, string nombreDocumento)
+        {
+            if (archivo != null && archivo.Length > 0)
+            {
+                string rutaDirectorio = "NewFolder";
+                string rutaArchivo = Path.Combine(rutaDirectorio, nombreDocumento);
+
+                using (var fileStream = new FileStream(rutaArchivo, FileMode.Create))
+                {
+                    archivo.CopyTo(fileStream);
+                }
+
+                return rutaArchivo;
+            }
+
+            return null;
+        }
+
+        [HttpGet]
+        public IActionResult Download(int documentoId)
+        {
+            var documento = _context.Documentos.FirstOrDefault(d => d.DocumentoId == documentoId);
+
+            if (documento != null && !string.IsNullOrEmpty(documento.RutaDocumento))
+            {
+                var rutaCompleta = documento.RutaDocumento.TrimEnd('.');
+                var fileBytes = System.IO.File.ReadAllBytes(rutaCompleta);
+
+                return File(fileBytes, "application/pdf", documento.NombreDocumento);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
         // GET: Prospectos
         public async Task<IActionResult> Index()
         {
@@ -43,13 +80,16 @@ namespace AgricolaProspectos.Controllers
             }
 
             var prospecto = await _context.Prospectos
-            .Include(p => p.ObservacionesRechazos)
-            .FirstOrDefaultAsync(m => m.ProspectoId == id);
+                .Include(p => p.ObservacionesRechazos)
+                .Include(p => p.Documentos)
+                .FirstOrDefaultAsync(m => m.ProspectoId == id);
 
             if (prospecto == null)
             {
                 return NotFound();
             }
+
+            Console.WriteLine($"documentos cargados: {prospecto?.Documentos?.Count ?? 0}");
 
             return View(prospecto);
         }
@@ -81,13 +121,33 @@ namespace AgricolaProspectos.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProspectoId,Nombre,PrimerApellido,SegundoApellido,Calle,Numero,Colonia,CodigoPostal,Telefono,Rfc,Estatus")] Prospecto prospecto)
+        public async Task<IActionResult> Create([Bind("Nombre,PrimerApellido,SegundoApellido,Calle,Numero,Colonia,CodigoPostal,Telefono,Rfc,Estatus,Documentos")] Prospecto prospecto)
         {
+            Console.WriteLine("Prueba 1");
+
             if (ModelState.IsValid)
             {
-                _context.Add(prospecto);
+                if (prospecto.Documentos != null && prospecto.Documentos.Count > 0)
+                {
+                    foreach (var documento in prospecto.Documentos)
+                    {
+                        if (documento.Archivo != null && documento.Archivo.Length > 0)
+                        {
+                            Console.WriteLine("Prueba 5");
+
+                            // Guarda el archivo y obtener la ruta
+                            documento.RutaDocumento = GuardarArchivo(documento.Archivo, documento.NombreDocumento);
+
+                            // Añadir el documento al contexto
+                            _context.Documentos.Add(documento);
+                        }
+                    }
+                }
+
+                // Guarda prospecto
+                _context.Prospectos.Add(prospecto);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(prospecto);
@@ -116,7 +176,6 @@ namespace AgricolaProspectos.Controllers
                 return Problem("Entity set 'agricolaContext.Prospectos' is null.");
             }
 
-            // Añade estas líneas para depurar
             Console.WriteLine($"ProspectoId: {ProspectoId}");
             Console.WriteLine($"dictamen: {dictamen}");
             Console.WriteLine($"observaciones: {observaciones}");

@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="agricola\**" />
+    <Compile Remove="Models\NewFolder\**" />
     <Content Remove="agricola\**" />
+    <Content Remove="Models\NewFolder\**" />
     <EmbeddedResource Remove="agricola\**" />
+    <EmbeddedResource Remove="Models\NewFolder\**" />
     <None Remove="agricola\**" />
+    <None Remove="Models\NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +29,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
   </ItemGroup>
 
 </Project>
