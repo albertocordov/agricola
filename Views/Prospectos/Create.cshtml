@@ -68,11 +68,11 @@
         <!-- Documentos -->
         <div class="col-md-6">
             <div class="form-group">
-                <label>Documentos:</label>
+                <label>Documentos*:</label>
                 <div id="documentosContainer">
                     <div class="documento-input">
-                        <input type="text" name="Documentos[0].NombreDocumento" class="form-control" placeholder="Nombre del documento" required>
-                        <input type="file" name="Documentos[0].Archivo" class="form-control" accept=".pdf" required>
+                        <input type="text" name="Documentos[0].NombreDocumento" class="form-control nombre-archivo" placeholder="Nombre del documento" required>
+                        <input type="file" name="Documentos[0].Archivo" class="form-control archivo" accept=".pdf" required>
                         <br>
                     </div>
                 </div>
@@ -98,13 +98,19 @@
             var agregarDocumentoBtn = $("#agregarDocumentoBtn");
             var documentoCount = 1;
 
-            // Se hace la lógica para agregar nuevo formulario de documento al pulsar el botón de agregar. 
+            // Se hace la lógica para agregar nuevo formulario de documento al pulsar el botón de agregar.
             agregarDocumentoBtn.click(function () {
                 var documentoInput = '<div class="documento-input">' +
-                    '<input type="text" name="Documentos[' + documentosContainer.children().length + '].NombreDocumento" class="form-control" placeholder="Nombre del documento" required>' +
-                    '<input type="file" name="Documentos[' + documentosContainer.children().length + '].Archivo" class="form-control" accept=".pdf" required>' +
+                    '<input type="text" name="Documentos[' + documentosContainer.children().length + '].NombreDocumento" class="form-control nombre-archivo" placeholder="Nombre del documento" required>' +
+                    '<input type="file" name="Documentos[' + documentosContainer.children().length + '].Archivo" class="form-control archivo" accept=".pdf" required>' +
                     '<br></div>';
                 documentosContainer.append(documentoInput);
+            });
+
+            // Actualizar el valor del campo de texto al seleccionar un archivo.
+            documentosContainer.on('change', '.archivo', function () {
+                var fileName = $(this).val().split('\\').pop();
+                $(this).siblings('.nombre-archivo').val(fileName);
             });
 
             // Se muestra la confirmación antes de regresar.
